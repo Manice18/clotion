@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, X } from "lucide-react";
+import { ImageIcon, X, FileVideo } from "lucide-react";
 import { useCoverImage } from "@/hooks/use-cover-image";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
 import { useEdgeStore } from "@/lib/edgestore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useMemo } from "react";
 
 interface CoverImageProps {
   url?: string;
@@ -46,7 +47,14 @@ const Cover = ({ url, preview }: CoverImageProps) => {
       )}
     >
       {!!url && (
-        <Image src={url} fill alt="Cover Image" className="object-cover" />
+        useMemo(() => {
+          const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
+          return isVideo ? (
+            <video src={url} className="h-full w-full object-cover" controls={preview} autoPlay={preview} loop={preview} muted={preview} />
+          ) : (
+            <Image src={url} fill alt="Cover Image" className="object-cover" />
+          );
+        }, [url, preview])
       )}
       {url && !preview && (
         <div className="absolute bottom-5 right-5 flex items-center gap-2 opacity-0 group-hover:opacity-100">
@@ -56,7 +64,11 @@ const Cover = ({ url, preview }: CoverImageProps) => {
             variant="outline"
             size="sm"
           >
-            <ImageIcon className="mr-2 h-4 w-4" />
+            {url.match(/\.(mp4|webm|ogg)$/i) ? (
+              <FileVideo className="mr-2 h-4 w-4" />
+            ) : (
+              <ImageIcon className="mr-2 h-4 w-4" />
+            )}
             Change cover
           </Button>
           <Button
