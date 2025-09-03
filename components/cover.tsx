@@ -27,6 +27,8 @@ const Cover = ({ url, preview }: CoverImageProps) => {
 
   const removeCoverImage = useMutation(api.documents.removeCoverImage);
 
+  const isVideo = useMemo(() => url?.match(/\.(mp4|webm|ogg)$/i), [url]);
+
   const onRemove = async () => {
     if (url) {
       await edgestore.publicFiles.delete({
@@ -46,16 +48,19 @@ const Cover = ({ url, preview }: CoverImageProps) => {
         url && "bg-muted",
       )}
     >
-      {!!url && (
-        useMemo(() => {
-          const isVideo = url.match(/\.(mp4|webm|ogg)$/i);
-          return isVideo ? (
-            <video src={url} className="h-full w-full object-cover" controls={preview} autoPlay={preview} loop={preview} muted={preview} />
-          ) : (
-            <Image src={url} fill alt="Cover Image" className="object-cover" />
-          );
-        }, [url, preview])
-      )}
+      {!!url &&
+        (isVideo ? (
+          <video
+            src={url}
+            className="h-full w-full object-cover"
+            controls={preview}
+            autoPlay={preview}
+            loop={preview}
+            muted={preview}
+          />
+        ) : (
+          <Image src={url} fill alt="Cover Image" className="object-cover" />
+        ))}
       {url && !preview && (
         <div className="absolute bottom-5 right-5 flex items-center gap-2 opacity-0 group-hover:opacity-100">
           <Button
@@ -64,7 +69,7 @@ const Cover = ({ url, preview }: CoverImageProps) => {
             variant="outline"
             size="sm"
           >
-            {url.match(/\.(mp4|webm|ogg)$/i) ? (
+            {isVideo ? (
               <FileVideo className="mr-2 h-4 w-4" />
             ) : (
               <ImageIcon className="mr-2 h-4 w-4" />

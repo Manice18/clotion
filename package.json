@@ -12,8 +12,8 @@
     "node": "22.x"
   },
   "dependencies": {
-    "@blocknote/core": "^0.37.0",
-    "@blocknote/react": "^0.37.0",
+    "@blocknote/core": "^0.9.6",
+    "@blocknote/react": "^0.9.6",
     "@clerk/clerk-react": "^5.46.0",
     "@edgestore/react": "^0.5.3",
     "@edgestore/server": "^0.5.3",
